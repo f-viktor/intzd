@@ -6,12 +6,12 @@ import argparse
 
 # argparse, and starts run coroutine
 def getArgs():
-    parser = argparse.ArgumentParser(description='AppRTC')
+    parser = argparse.ArgumentParser(description='Convert .epub into audiobooks via AI Text-to-Speech')
     parser.add_argument('chapters', metavar='N', type=str, nargs='*',
                     help='text/html files to parse')
     parser.add_argument('--book', '-b', help='Folder of text files to process', default="")
     parser.add_argument('--output', '-o', help='folder to put the resulting audio file', default="audiobook")
-    parser.add_argument('--format', '-f' ,help='Set the output audio format', default=".wav"), #doesnt work lol
+    parser.add_argument('--format', '-f' ,help='Set the output audio format', default=".ogg"), #doesnt work lol
     parser.add_argument('--verbose', '-v', action='count') # doesnt work either lol
 
     args = parser.parse_args()
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         if not os.path.exists(args.output+"/"+chapterTitle+args.format):
             plainChapter = bookparser.parseChapter(args.book+chapter)
             subsentences = bookparser.splitSentences(plainChapter)
-            tts.vocalise(subsentences, args.output+"/"+chapterTitle, args.format, tacotron2, waveglow)
+            tts.vocalise(subsentences, args.output+"/"+chapterTitle, args.format, ".wav", tacotron2, waveglow)
             print("[+] TTS on "+chapter+" done, saved to "+args.output+"/"+chapterTitle+args.format+" ["+str(i)+"/"+str(len(chapterList))+"]")
         else:
             print("[+] "+chapter+" already exists at "+args.output+"/"+chapterTitle+args.format+", skipping! ["+str(i)+"/"+str(len(chapterList))+"]")

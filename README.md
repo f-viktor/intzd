@@ -69,7 +69,7 @@ python intdz.py -b unzippedbook/epub/text/ -o custom/folder/path
 
 
 ## How long does it take
-Testing on [The book of tea](https://standardebooks.org/ebooks/okakura-kakuzo/the-book-of-tea), the resulting audio is 107 minutes (1:37) whereas the suggested reading time is 66 minutes. This means the audiobook is 60% longer than the suggested reading time displayed on standardebooks.org. This isn't too bad as audiobooks are generally slower than reading the actual book to begin with. This is fairly normal for any audiobook. Generating the audiofiles also took around 90 minutes on a 1060.
+Testing on [The Book of Tea](https://standardebooks.org/ebooks/okakura-kakuzo/the-book-of-tea), the resulting audio is 107 minutes (1:47) whereas the suggested reading time is 66 minutes. This means the audiobook is 60% longer than the suggested reading time displayed on standardebooks.org. This isn't too bad as audiobooks are generally slower than reading the actual book to begin with. This is fairly normal for any audiobook. Generating the audiofiles also took around 90 minutes on a 1060.
 
 ## Improvement ideas
 ~~Save last transcribed sentence and corresponding audio to a file when script is interrupted.~~  
