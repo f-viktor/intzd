@@ -6,7 +6,7 @@ Using tacotron2 -> waveglow to convert .epub into audiobooks.
 I used free e-books from the wonderful standardebooks.org, but any e-book should work as long as it's in .epub format.  
 Converting the e-books into audiobooks takes "a while"™. With a GTX1060 it takes about as long as the resulting audiobook is.  
 The voice, while legible, is inferior to an actual person reading the book.
-I've hopefully uploaded some sample audio so you can see what you're getting without having to wait 30 minutes to convert a short chapter.  
+I've hopefully uploaded some [sample audio](https://github.com/f-viktor/intzd/blob/master/sampleAudio.ogg?raw=true) so you can see what you're getting without having to wait 30 minutes to convert a short chapter.  
 There are superior voice synthesizers out there, but none that you can run for free on your own machine.
 If you find one, let me know. Maybe Glow-TTS would be better for this, but I haven't found a good writeup for it.  
 I have no idea about the legality of uploading such audiobooks on the internet or even creating them.
@@ -23,9 +23,10 @@ source tts/bin/activate
 4. `pip install -r requirements.txt` to be honest i don't remember installing this much stuff, i guess they are mostly dependencies
 5. Unzip your e-book (yes, .epub files are .zip archives), and locate the folder with the text in it.  
 it will likely be called `bookname/epub/text` or something similar. hopefully you will find separate .xhtml files for each   chapter here, and nothing else.
-6. You can now start the voice synthesis as `python intdz.py -b bookname/epub/text -o bookname/audio`  
+6. Remove everything from the folder that you do not want to convert to audio (table of contents, afterword, etc.)
+7. You can now start the voice synthesis as `python intdz.py -b bookname/epub/text -o bookname/audio`  
 This will go file-by-file in the `/text` folder and when the audio file is done, it will save to `/audio`
-7. The PyTorch module will cry about something, just copy whatever it suggests in red and it should work.
+8. The PyTorch module will cry about something, just copy whatever it suggests in red and it should work.
 
 
 ## Improvement ideas
