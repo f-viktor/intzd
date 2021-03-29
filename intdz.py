@@ -1,110 +1,51 @@
 import os
 import sys
+import tts
+import bookparser
+import argparse
 
-# get the input agruments
+# argparse, and starts run coroutine
 def getArgs():
-    if  len(sys.argv) < 3:
-        print("python3 main.py chaptersfolder outputfolder")
-        sys.exit(2)
-    inputFolder = sys.argv[1]
-    outputFolder = sys.argv[2]
-    return inputFolder, outputFolder
+    parser = argparse.ArgumentParser(description='AppRTC')
+    parser.add_argument('chapters', metavar='N', type=str, nargs='*',
+                    help='text/html files to parse')
+    parser.add_argument('--book', '-b', help='Folder of text files to process', default="")
+    parser.add_argument('--output', '-o', help='folder to put the resulting audio file', default="audiobook")
+    parser.add_argument('--format', '-f' ,help='Set the output audio format', default=".wav"), #doesnt work lol
+    parser.add_argument('--verbose', '-v', action='count') # doesnt work either lol
 
-# gets the list of files in the folder, expects them to be some sort of html
-def getChapters(inputFolder):
-    chapterList = os.listdir(inputFolder)
-    print("[+] Found "+str(len(chapterList))+" files in "+inputFolder)
-    return chapterList
+    args = parser.parse_args()
 
-from bs4 import BeautifulSoup
-# converts .xhtml files to plain text
-def parseChapter(chapter):
-    with open(chapter) as html:
-        soup = BeautifulSoup(html, features="html.parser")
+    if len(args.chapters) > 0 and args.book:
+        print("Don't use file lists and --book at the same time")
 
-        # kill all script and style elements
-        for script in soup(["script", "style"]):
-            script.extract()    # rip it out
+    if len(args.chapters) == 0 and args.book == "":
+        print("Set at least one filename or --book")
 
-        # get text
-        plainChapter = soup.get_text()
-        print("[+] Converted "+chapter+" into plaint text")
-        return plainChapter
-    print("[!] Failed to convert "+chapter+" into plaint text")
-    return
+    return args
 
-#split text to small parts as tacotron2 doesn't like long sentences and will clip them
-def splitSentences(fulltext):
-    #for splitting text by sentence
-    import nltk.data
-    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-    sentences =tokenizer.tokenize(fulltext)
-
-    #addittionally splitting at every comma
-    subsentences = []
-    for i in sentences:
-        subsentences.extend(i.split(", "))
-    return subsentences
-
-# just stuff i found here https://pytorch.org/hub/nvidia_deeplearningexamples_tacotron2/
-def vocalise(subsentences, outputFile):
-    print("[+] Starting TTS on "+outputFile.split("/")[-1])
-    import torch
-    tacotron2 = torch.hub.load('nvidia/DeepLearningExamples:torchhub', 'nvidia_tacotron2')
-
-    import numpy as np
-    from scipy.io.wavfile import write
-
-    tacotron2 = tacotron2.to('cuda')
-    # modified this to allow longer sentences, unsure if it did anything at all.
-    tacotron2.max_decoder_steps = 3000
-    tacotron2.eval()
-
-    waveglow = torch.hub.load('nvidia/DeepLearningExamples:torchhub', 'nvidia_waveglow')
-    waveglow = waveglow.remove_weightnorm(waveglow)
-    waveglow = waveglow.to('cuda')
-    waveglow.eval()
-
-
-    try:# this is here so we can save before Ctrl+C
-        # process each sentence as tacotron2 -> waveglow -> whatever
-        rate = 22050
-        audio_numpy = np.ndarray(1)
-        for text in subsentences:
-            print(text)
-            # preprocessing
-            sequence = np.array(tacotron2.text_to_sequence(text, ['english_cleaners']))[None, :]
-            sequence = torch.from_numpy(sequence).to(device='cuda', dtype=torch.int64)
-
-            # run the models
-            with torch.no_grad():
-                _, mel, _, _ = tacotron2.infer(sequence)
-                audio = waveglow.infer(mel)
-            #audio_numpy = audio[0].data.cpu().numpy()
-            audio_numpy = np.concatenate((audio_numpy, audio[0].data.cpu().numpy()))
-
-
-        # save resulting wav file
-        write(outputFile+".wav", rate, audio_numpy)
-    except KeyboardInterrupt:
-        write(outputFile+".wav.part", rate, audio_numpy)
-        # this means there was a partial TTS, so we also save where we left off
-        print("\n[!] TTS interrupted, partial file written to "+ outputFile+".wav.part \nprogress saved to "+outputFile+".sav")
-        print("[?] To continue from here run  python intdz.py something something")
-        sys.exit()
 
 # I hate this language
 if __name__ == "__main__":
-    inputFolder, outputFolder = getArgs()
-    chapterList = getChapters(inputFolder)
+    args = getArgs()
+    if args.book != "":
+        chapterList = bookparser.getChapters(args.book)
+    else:
+        chapterList = args.chapters
     chapterList.sort()
-    if not os.path.exists(outputFolder):
-        os.makedirs(outputFolder)
+    if not os.path.exists(args.output):
+        os.makedirs(args.output)
 
+    tacotron2, waveglow = tts.initializeTTSEngine()
     i = 0
     for chapter in chapterList:
-        plainChapter = parseChapter(inputFolder+"/"+chapter)
-        subsentences = splitSentences(plainChapter)
-        vocalise(subsentences,outputFolder+"/"+os.path.splitext(chapter)[0])
         i=i+1
-        print("[+] TTS on "+chapter+" done, saved to "+outputFolder+"/"+os.path.splitext(chapter)[0]+".wav ["+str(i)+"/"+str(len(chapterList))+"]")
+        chapterTitle= os.path.basename(os.path.splitext(chapter)[0])
+        # check if we finished transcribing this before
+        if not os.path.exists(args.output+"/"+chapterTitle+args.format):
+            plainChapter = bookparser.parseChapter(args.book+chapter)
+            subsentences = bookparser.splitSentences(plainChapter)
+            tts.vocalise(subsentences, args.output+"/"+chapterTitle, args.format, tacotron2, waveglow)
+            print("[+] TTS on "+chapter+" done, saved to "+args.output+"/"+chapterTitle+args.format+" ["+str(i)+"/"+str(len(chapterList))+"]")
+        else:
+            print("[+] "+chapter+" already exists at "+args.output+"/"+chapterTitle+args.format+", skipping! ["+str(i)+"/"+str(len(chapterList))+"]")

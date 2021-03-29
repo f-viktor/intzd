@@ -1,4 +1,4 @@
-# INTDZ aka. "It's Not That Deep Zen"
+# INTDZ aka. "It's Not That Deep, Zen"
 Aka. I'm too cheap to pay $8/mo for good quality audiobooks.  
 Using tacotron2 -> waveglow to convert .epub into audiobooks.
 
@@ -20,20 +20,30 @@ Best if you don't do this with anything that is actively copyrighted. I take no 
 python -m venv tts
 source tts/bin/activate
 ```
-4. `pip install requirements.txt` to be honest i don't remember installing this much stuff, i guess they are mostly dependencies
+4. `pip install -r requirements.txt` to be honest i don't remember installing this much stuff, i guess they are mostly dependencies
 5. Unzip your e-book (yes, .epub files are .zip archives), and locate the folder with the text in it.  
-it will likely be called `bookname/epub/text` or something similar. hopefully you will find separate .xhtml files for each   chapter here, and nothing else. 
+it will likely be called `bookname/epub/text` or something similar. hopefully you will find separate .xhtml files for each   chapter here, and nothing else.
 6. You can now start the voice synthesis as `python intdz.py bookname/epub/text bookname/audio`  
 This will go file-by-file in the `/text` folder and when the audio file is done, it will save to `/audio`
 7. The PyTorch module will cry about something, just copy whatever it suggests in red and it should work.
 
 
 ## Improvement ideas
+~~Save last transcribed sentence and corresponding audio to a file when script is interrupted.~~  
+~~Option to only transcribe a file, or a specific subset of files.~~  
+~~Recognize which chapters have already been transcribed, and continue from there.~~  
+compress savefiles https://medium.com/@busybus/zipjson-3ed15f8ea85d   
 Add an option to play the audio real-time while transcribing.  
-Save last transcribed sentence and corresponding audio to a file when script is interrupted.  
-Recognize which chapters have already been transcribed, and continue from there.  
-Option to only transcribe a file, or a specific subset of files.  
-Automatically convert to a compressed file format. (wav is like 10MB/minute)  
+Convert to a different file format directly, without writing a wav.   
+Re-try tacotron input if we run out of decoder steps, by splitting the sentence into parts  
+
+## FAQ
+What is `Warning! Reached max decoder steps`?  
+- This is tachotron's error message meaning that it failed to create a spectogram from the subsentence.
+This usually happens if the sentence is too long, or is weirdly punctuated.
+Most commonly, it will result in the audio being cut off, or having some weird robot-voice anomaly.
+If you want to avoid this, you can manually splice sentences with commas, but it should happen relatively rarely.
+(like once or twice per chapter)
 
 ## Sources
 https://pytorch.org/hub/nvidia_deeplearningexamples_tacotron2/
