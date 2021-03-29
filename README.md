@@ -28,6 +28,48 @@ it will likely be called `bookname/epub/text` or something similar. hopefully yo
 This will go file-by-file in the `/text` folder and when the audio file is done, it will save to `/audio`
 8. The PyTorch module will cry about something, just copy whatever it suggests in red and it should work.
 
+## Usage
+```
+usage: intdz.py [-h] [--book BOOK] [--output OUTPUT] [--format FORMAT] [--verbose] [N ...]
+
+Convert .epub into audiobooks via AI Text-to-Speech
+
+positional arguments:
+  N                     text/html files to parse
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --book BOOK, -b BOOK  Folder of text files to process
+  --output OUTPUT, -o OUTPUT
+                        folder to put the resulting audio file
+  --format FORMAT, -f FORMAT
+                        Set the output audio format
+  --verbose, -v
+```
+
+### Example usecases
+(unzip your .epub book into a folder beforehand)  
+
+Convert an entire book (results will be in ./audiobook)
+```
+python intdz.py -b unzippedbook/epub/text/
+```
+Convert only the first two chapters
+```
+python intdz.py unzippedbook/epub/text/chapter-1.xhtml  unzippedbook/epub/text/chapter-2.xhtml
+```
+Convert the entire book and format as mp3
+```
+python intdz.py -b unzippedbook/epub/text/ -f .mp3
+```
+Convert the entire book and output it to a custom folder
+```
+python intdz.py -b unzippedbook/epub/text/ -o custom/folder/path
+```
+
+
+## How long does it take
+Testing on [The book of tea](https://standardebooks.org/ebooks/okakura-kakuzo/the-book-of-tea), the resulting audio is 107 minutes (1:37) whereas the suggested reading time is 66 minutes. This means the audiobook is 60% longer than the suggested reading time displayed on standardebooks.org. This isn't too bad as audiobooks are generally slower than reading the actual book to begin with. This is fairly normal for any audiobook. Generating the audiofiles also took around 90 minutes on a 1060.
 
 ## Improvement ideas
 ~~Save last transcribed sentence and corresponding audio to a file when script is interrupted.~~  
