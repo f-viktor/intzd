@@ -3,7 +3,7 @@ Aka. I'm too cheap to pay $8/mo for good quality audiobooks.
 Using tacotron2 -> waveglow to convert .epub into audiobooks.
 
 ## Disclaimer
-I used free e-books from the wonderful standardebooks.org, but any e-book should work as long as it's in .epub format.  
+I used free e-books from the wonderful [standardebooks.org](https://standardebooks.org), but any e-book should work as long as it's in .epub format. (other text-based formats probably work I just didn't test them)
 Converting the e-books into audiobooks takes "a while"™. With a GTX1060 it takes about as long as the resulting audiobook is.  
 The voice, while legible, is inferior to an actual person reading the book.
 I've hopefully uploaded some [sample audio](https://github.com/f-viktor/intzd/blob/master/sampleAudio.ogg?raw=true) so you can see what you're getting without having to wait 30 minutes to convert a short chapter.  
@@ -76,7 +76,7 @@ python intdz.py -b unzippedbook/epub/text/ -as 0.5
 
 
 ## How long does it take
-Testing on [The Book of Tea](https://standardebooks.org/ebooks/okakura-kakuzo/the-book-of-tea), the resulting audio is 107 minutes (1:47) whereas the suggested reading time is 66 minutes. This means the audiobook is 60% longer than the suggested reading time displayed on standardebooks.org. This isn't too bad as audiobooks are generally slower than reading the actual book to begin with. This is fairly normal for any audiobook. Generating the audiofiles also took around 90 minutes on a 1060. That being said, listening at this speed is quite fatiguing, as the AI rarely makes pauses, and occasionally pronounces things weird. I found that setting playback speed to 0.9 makes for a better listening experinece, and this is now the default. You can control this value via the --audio_speed option.
+Testing on [The Book of Tea](https://standardebooks.org/ebooks/okakura-kakuzo/the-book-of-tea), the resulting audio is 107 minutes (1:47) whereas the suggested reading time is 66 minutes. This means the audiobook is 60% longer than the suggested reading time displayed on [standardebooks.org](https://standardebooks.org). This isn't too bad as audiobooks are generally slower than reading the actual book to begin with. This is fairly normal for any audiobook. Generating the audio files also took around 90 minutes on a 1060. That being said, listening at this speed is quite fatiguing, as the AI rarely makes pauses, and occasionally pronounces things weird. I found that setting playback speed to 0.9 makes for a better listening experience, and this is now the default. You can control this value via the --audio_speed option.
 
 ## Improvement ideas
 ~~Save last transcribed sentence and corresponding audio to a file when script is interrupted.~~  
@@ -89,11 +89,14 @@ Add an option to play the audio real-time while transcribing.
 
 ## FAQ
 What is `Warning! Reached max decoder steps`?  
-- This is tachotron's error message meaning that it failed to create a spectogram from the subsentence.
+- This is tachotron's error message meaning that it failed to create a spectrogram from the subsentence.
 This usually happens if the sentence is too long, or is weirdly punctuated.
-Most commonly, it will result in the audio being cut off, or having some weird robot-voice anomaly.
-If you want to avoid this, you can manually splice sentences with commas, but it should happen relatively rarely.
+Most commonly, it will result in the audio being cut off, or having some weird robot-voice anomaly. I find tha latter quite endearing.
+If you want to avoid this, you can manually splice sentences with commas, and correct foreign words, but it should happen relatively rarely.
 (like once or twice per chapter)
+
+The AI pronounces foreign character names wrong, what do I do?
+- `sed 's/Dostoevsky/Doestoaveski/g'` :D
 
 ## Sources
 https://pytorch.org/hub/nvidia_deeplearningexamples_tacotron2/
