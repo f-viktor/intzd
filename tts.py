@@ -20,7 +20,7 @@ def initializeTTSEngine():
 
 # just stuff i found here https://pytorch.org/hub/nvidia_deeplearningexamples_tacotron2/
 # This does the actual text to speech
-def vocalise(subsentences, outputFile, outputFormat, intermediaryFormat, tacotron2, waveglow):
+def vocalise(subsentences, outputFile, outputFormat, speed, intermediaryFormat, tacotron2, waveglow):
     print("[+] Starting TTS on "+outputFile.split("/")[-1])
     rate = 22050
     # load a saved state if any
@@ -50,7 +50,7 @@ def vocalise(subsentences, outputFile, outputFormat, intermediaryFormat, tacotro
         # these are just alternative ways to write files, none seemed too good
         # sf.write(outputFile+".wav",audio_numpy, rate, format="ogg")
         # writeAudio(outputFile+".wav",audio_numpy, rate)
-        convertFormat(outputFile+intermediaryFormat, outputFormat)
+        convertFormat(outputFile+intermediaryFormat, outputFormat, speed)
         cleanSaves(outputFile,intermediaryFormat)
     except KeyboardInterrupt:
         saveVocaliseState(outputFile,intermediaryFormat,audio_numpy,currentSubsentenceIndex,rate)
@@ -105,11 +105,12 @@ def cleanSaves(outputFile,intermediaryFormat):
     print("[+] Partial files "+outputFile+".sav, "+outputFile+intermediaryFormat+".part and "+outputFile+intermediaryFormat+" removed")
 
 import ffmpeg
-def convertFormat(sourceFile, format):
+def convertFormat(sourceFile, format, speed):
     sourceSize=os.stat(sourceFile).st_size
     stream = ffmpeg.input(sourceFile)
+    stream = stream.audio.filter("atempo", speed)  # slow it down by  10%
     stream = ffmpeg.output(stream, os.path.splitext(sourceFile)[0]+format)
-    stream = stream.global_args('-loglevel', 'quiet')
+    #stream = stream.global_args('-loglevel', 'quiet')
     stream = stream.global_args('-y')
     ffmpeg.run(stream)
     convertedSize=os.stat(os.path.splitext(sourceFile)[0]+format).st_size

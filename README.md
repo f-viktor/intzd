@@ -30,7 +30,7 @@ This will go file-by-file in the `/text` folder and when the audio file is done,
 
 ## Usage
 ```
-usage: intdz.py [-h] [--book BOOK] [--output OUTPUT] [--format FORMAT] [--verbose] [N ...]
+usage: intdz.py [-h] [--book BOOK] [--output OUTPUT] [--format FORMAT] [--audio_speed AUDIO_SPEED] [--verbose] [N ...]
 
 Convert .epub into audiobooks via AI Text-to-Speech
 
@@ -44,7 +44,10 @@ optional arguments:
                         folder to put the resulting audio file
   --format FORMAT, -f FORMAT
                         Set the output audio format
+  --audio_speed AUDIO_SPEED, -as AUDIO_SPEED
+                        Set the speed of the resulting audio
   --verbose, -v
+
 ```
 
 ### Example usecases
@@ -66,10 +69,14 @@ Convert the entire book and output it to a custom folder
 ```
 python intdz.py -b unzippedbook/epub/text/ -o custom/folder/path
 ```
+Convert a book, with each file playing back at 0.5x speed
+```
+python intdz.py -b unzippedbook/epub/text/ -as 0.5
+```
 
 
 ## How long does it take
-Testing on [The Book of Tea](https://standardebooks.org/ebooks/okakura-kakuzo/the-book-of-tea), the resulting audio is 107 minutes (1:47) whereas the suggested reading time is 66 minutes. This means the audiobook is 60% longer than the suggested reading time displayed on standardebooks.org. This isn't too bad as audiobooks are generally slower than reading the actual book to begin with. This is fairly normal for any audiobook. Generating the audiofiles also took around 90 minutes on a 1060.
+Testing on [The Book of Tea](https://standardebooks.org/ebooks/okakura-kakuzo/the-book-of-tea), the resulting audio is 107 minutes (1:47) whereas the suggested reading time is 66 minutes. This means the audiobook is 60% longer than the suggested reading time displayed on standardebooks.org. This isn't too bad as audiobooks are generally slower than reading the actual book to begin with. This is fairly normal for any audiobook. Generating the audiofiles also took around 90 minutes on a 1060. That being said, listening at this speed is quite fatiguing, as the AI rarely makes pauses, and occasionally pronounces things weird. I found that setting playback speed to 0.9 makes for a better listening experinece, and this is now the default. You can control this value via the --audio_speed option.
 
 ## Improvement ideas
 ~~Save last transcribed sentence and corresponding audio to a file when script is interrupted.~~  
