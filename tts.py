@@ -110,7 +110,7 @@ def convertFormat(sourceFile, format, speed):
     stream = ffmpeg.input(sourceFile)
     stream = stream.audio.filter("atempo", speed)  # slow it down by  10%
     stream = ffmpeg.output(stream, os.path.splitext(sourceFile)[0]+format)
-    #stream = stream.global_args('-loglevel', 'quiet')
+    stream = stream.global_args('-loglevel', 'quiet')
     stream = stream.global_args('-y')
     ffmpeg.run(stream)
     convertedSize=os.stat(os.path.splitext(sourceFile)[0]+format).st_size
