@@ -21,7 +21,7 @@ python -m venv tts
 source tts/bin/activate
 ```
 4. `pip install -r requirements.txt` to be honest i don't remember installing this much stuff, i guess they are mostly dependencies
-5. Unzip your e-book (yes, .epub files are .zip archives), and locate the folder with the text in it.  
+5. Unzip your e-book (yes, .epub files are .zip archives), and locate the folder with the text in it.
 it will likely be called `bookname/epub/text` or something similar. hopefully you will find separate .xhtml files for each   chapter here, and nothing else.
 6. Remove everything from the folder that you do not want to convert to audio (table of contents, afterword, etc.)
 7. You can now start the voice synthesis as `python intdz.py -b bookname/epub/text -o bookname/audio`  
@@ -76,7 +76,7 @@ python intdz.py -b unzippedbook/epub/text/ -as 0.5
 
 
 ## How long does it take
-Testing on [The Book of Tea](https://standardebooks.org/ebooks/okakura-kakuzo/the-book-of-tea), the resulting audio is 107 minutes (1:47) whereas the suggested reading time is 66 minutes. This means the audiobook is 60% longer than the suggested reading time displayed on [standardebooks.org](https://standardebooks.org). This isn't too bad as audiobooks are generally slower than reading the actual book to begin with. This is fairly normal for any audiobook. Generating the audio files also took around 90 minutes on a 1060. That being said, listening at this speed is quite fatiguing, as the AI rarely makes pauses, and occasionally pronounces things weird. I found that setting playback speed to 0.9 makes for a better listening experience, and this is now the default. You can control this value via the --audio_speed option.
+Testing on [The Book of Tea](https://standardebooks.org/ebooks/okakura-kakuzo/the-book-of-tea), the resulting audio is 107 minutes (1:47) whereas the suggested reading time is 66 minutes. This means the audiobook is 60% longer than the suggested reading time displayed on [standardebooks.org](https://standardebooks.org). This isn't too bad as audiobooks are generally slower than reading the actual book to begin with. This is fairly normal for any audiobook. I've found an [actual audiobook](https://www.youtube.com/watch?v=gOxWD3-twRo) version of this, that is 2 hours long. Generating the audio files also took around 90 minutes on a 1060. That being said, listening at this speed is quite fatiguing, as the AI rarely makes pauses, and occasionally pronounces things weird. I found that setting playback speed to 0.9 makes for a better listening experience, and this is now the default. You can control this value via the --audio_speed option. This brings up The Book of Tea to 1:58, on par with the normal audiobook.
 
 ## Improvement ideas
 ~~Save last transcribed sentence and corresponding audio to a file when script is interrupted.~~  
